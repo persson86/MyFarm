@@ -10,7 +10,9 @@ import android.support.v7.widget.CardView
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.storage.FirebaseStorage
@@ -55,12 +57,18 @@ open class PlantViewModel(application: Application?) : AndroidViewModel(applicat
             card.setContentPadding(15, 30, 15, 30)
             card.setCardBackgroundColor(Color.parseColor("#FFC6D6C3"))
 
+            val ll = LinearLayout(context)
+            ll.layoutParams = params
+            ll.orientation = LinearLayout.VERTICAL
+            ll.minimumWidth = 200
+            ll.minimumHeight = 400
+
             val tvName = TextView(context)
             tvName.layoutParams = params
             tvName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30f)
             tvName.setTextColor(Color.RED)
             tvName.text = plant.value.plantName
-            card.addView(tvName)
+            ll.addView(tvName)
 
             val ivImage = ImageView(context)
             Glide.with(context)
@@ -68,8 +76,13 @@ open class PlantViewModel(application: Application?) : AndroidViewModel(applicat
                     .load(storageChildRef.child(plant.value.plantImage!!))
                     .placeholder(R.mipmap.ic_launcher)
                     .into(ivImage)
-            card.addView(ivImage)
+            ll.addView(ivImage)
 
+            card.setOnClickListener {
+                Toast.makeText(context, plant.value.plantName, Toast.LENGTH_SHORT).show()
+            }
+
+            card.addView(ll)
             activity.llContent.addView(card)
         }
     }
